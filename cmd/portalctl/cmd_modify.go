@@ -1,0 +1,70 @@
+package main
+
+import (
+	"encoding/json"
+	"flag"
+	"fmt"
+	"os"
+)
+
+func cmdModify(argv []string) {
+	fs := flag.NewFlagSet("modify", flag.ExitOnError)
+	var g gflags; g.add(fs)
+
+	bindings := fs.String("bindings", "", "JSON object of parameter->value strings")
+	bindingsFile := fs.String("bindings-file", "", "Path to JSON file with parameter->value strings")
+	var paramsKV strSlice
+	fs.Var(&paramsKV, "param", "Parameter as name=value (repeatable)")
+
+	fs.Parse(argv)
+	args := fs.Args()
+	if len(args) != 1 {
+		fmt.Fprintln(os.Stderr, "usage: portalctl modify [flags] <experiment-uuid-or-pid,name>")
+		os.Exit(2)
+	}
+
+	if (*bindings != "" && *bindingsFile != "") ||
+		((*bindings != "" || *bindingsFile != "") && len(paramsKV) > 0) {
+		fmt.Fprintln(os.Stderr, "error: choose one of --bindings-file, --bindings, or --param ...")
+		os.Exit(2)
+	}
+
+	var bindingsStr string
+	switch {
+	case *bindingsFile != "":
+		b, err := os.ReadFile(*bindingsFile)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "read --bindings-file: %v\n", err)
+			os.Exit(2)
+		}
+		bindingsStr = string(b)
+	case *bindings != "":
+		bindingsStr = *bindings
+	case len(paramsKV) > 0:
+		mp := map[string]string{}
+		for _, kv := range paramsKV {
+			var k, v string
+			n, _ := fmt.Sscanf(kv, "%[^=]=%s", &k, &v)
+			if n != 2 || k == "" {
+				fmt.Fprintf(os.Stderr, "bad --param %q, expected name=value\n", kv)
+				os.Exit(2)
+			}
+			mp[k] = v
+		}
+		b, _ := json.Marshal(mp)
+		bindingsStr = string(b)
+	}
+
+	p := map[string]any{"experiment": args[0]}
+	if bindingsStr != "" {
+		p["bindings"] = bindingsStr
+	}
+
+	cl := g.clientOrExit()
+	resp, err := cl.ModifyExperiment(p)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+	printJSON(resp)
+}
