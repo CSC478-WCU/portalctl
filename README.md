@@ -58,6 +58,11 @@ _Start the terraform-profile experiment (with inline parameters built via `--par
 ./portalctl start   -server boss.emulab.net -path /usr/testbed   -cert ./ssl/clab.crt -key ./ssl/clab.key   -project cloud-edu -name tf-demo   --param nodes="[{\"name\":\"node0\",\"image\":\"UBUNTU22-64-STD\"},{\"name\":\"node1\",\"image\":\"UBUNTU22-64-STD\"}]"   cloud-edu,terraform-profile
 ```
 
+_Start the default [emulab-ops,k8s]([url](https://www.cloudlab.us/show-profile.php?uuid=79d36573-a099-11ea-b1eb-e4434b2381fc)) profile with default params_ 
+```bash
+./portalctl start -server boss.emulab.net -path /usr/testbed   -cert ./cert.pem   -project cloud-edu -name tf-demo emulab-ops,k8s
+```
+
 _Check status (JSON payload from server):_
 
 ```bash
