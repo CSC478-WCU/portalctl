@@ -64,10 +64,9 @@ func cmdStart(argv []string) {
 	} else if len(paramsKV) > 0 {
 		mp := map[string]string{}
 		for _, kv := range paramsKV {
-			var k, v string
-			n, _ := fmt.Sscanf(kv, "%[^=]=%s", &k, &v)
-			if n != 2 || k == "" {
-				fmt.Fprintf(os.Stderr, "bad --param %q, expected name=value\n", kv)
+			k, v, err := parseKV(kv)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, err.Error())
 				os.Exit(2)
 			}
 			mp[k] = v
