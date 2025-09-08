@@ -103,5 +103,5 @@ _Terminate an experiment:_
   - To verify the server certificate, pass `-verify -cacert <CA.pem>`.
 - **Troubleshooting TLS:**
 
-  - If you see errors like *“invalid authority info access”*, ensure you’re using separate `-cert` and `-key` PEMs (or a combined PEM) and the loose loader from this repo.
+  - If you see errors like *“invalid authority info access”*, ensure you’re using separate `-cert` and `-key` PEMs (or a combined PEM) 
   - If your cert/key are encrypted, decrypt to plain PEMs before use.
