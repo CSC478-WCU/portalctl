@@ -1,0 +1,17 @@
+{
+  "nodes": [
+    {"kind":"rawpc","name":"host1","hardware_type":"d430","exclusive":true},
+    {
+      "kind":"xenvm",
+      "name":"vm1",
+      "cores":2,
+      "ram":4096,
+      "disk":20,
+      "instantiate_on":"host1"
+    } 
+  ],
+    "links": [
+        {"kind":"link","name":"lan0","interfaces":[{"node":"host1"},{"node":"vm1"}]}
+    ]
+
+}

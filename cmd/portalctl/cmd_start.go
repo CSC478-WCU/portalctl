@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -30,6 +29,8 @@ func cmdStart(argv []string) {
 	sshpub    := fs.String("sshpubkey", "", "SSH public key string")
 	noemail   := fs.Bool("noemail", false, "Suppress portal emails")
 	nopending := fs.Bool("nopending", false, "No pending flag")
+	spec     := fs.String("spec", "", "Experiment JSON for parameter 'spec_json'")
+	specFile := fs.String("spec-file", "", "Path to experiment JSON file for parameter 'spec_json'")
 
 	var paramsKV strSlice
 	fs.Var(&paramsKV, "param", "Parameter as name=value (repeatable)")
@@ -47,32 +48,10 @@ func cmdStart(argv []string) {
 	profile := args[0]
 
 	// Build "bindings": precedence bindings-file > bindings > param list
-	var bindingsStr string
-	if *bindingsFile != "" && *bindings != "" {
-		fmt.Fprintln(os.Stderr, "error: use either --bindings-file or --bindings, not both")
+	bindingsStr, err := BuildBindings(*spec, *specFile, *bindings, *bindingsFile, paramsKV)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(2)
-	}
-	if *bindingsFile != "" {
-		b, err := os.ReadFile(*bindingsFile)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "read --bindings-file: %v\n", err)
-			os.Exit(2)
-		}
-		bindingsStr = string(b)
-	} else if *bindings != "" {
-		bindingsStr = *bindings
-	} else if len(paramsKV) > 0 {
-		mp := map[string]string{}
-		for _, kv := range paramsKV {
-			k, v, err := parseKV(kv)
-			if err != nil {
-				fmt.Fprintln(os.Stderr, err.Error())
-				os.Exit(2)
-			}
-			mp[k] = v
-		}
-		b, _ := json.Marshal(mp)
-		bindingsStr = string(b)
 	}
 
 	p := map[string]any{

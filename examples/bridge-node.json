@@ -1,0 +1,7 @@
+{
+  "nodes":[{"kind":"rawpc","name":"a"},{"kind":"rawpc","name":"b"}],
+  "links":[
+    {"kind":"bridged_link","name":"core","interfaces":[{"node":"a"},{"node":"b"}],
+     "bandwidth":10000,"latency":20,"plr":0.01}
+  ]
+}

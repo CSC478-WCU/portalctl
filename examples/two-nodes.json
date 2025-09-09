@@ -1,0 +1,9 @@
+{
+  "nodes": [
+    {"kind":"rawpc","name":"n1"},
+    {"kind":"rawpc","name":"n2"}
+  ],
+  "links": [
+    {"kind":"link","name":"lan0","interfaces":[{"node":"n1"},{"node":"n2"}]}
+  ]
+}

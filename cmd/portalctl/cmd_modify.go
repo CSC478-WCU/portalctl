@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -13,6 +12,9 @@ func cmdModify(argv []string) {
 
 	bindings := fs.String("bindings", "", "JSON object of parameter->value strings")
 	bindingsFile := fs.String("bindings-file", "", "Path to JSON file with parameter->value strings")
+	spec     := fs.String("spec", "", "Experiment JSON for parameter 'spec_json'")
+	specFile := fs.String("spec-file", "", "Path to experiment JSON file for parameter 'spec_json'")
+
 	var paramsKV strSlice
 	fs.Var(&paramsKV, "param", "Parameter as name=value (repeatable)")
 
@@ -29,29 +31,10 @@ func cmdModify(argv []string) {
 		os.Exit(2)
 	}
 
-	var bindingsStr string
-	switch {
-	case *bindingsFile != "":
-		b, err := os.ReadFile(*bindingsFile)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "read --bindings-file: %v\n", err)
-			os.Exit(2)
-		}
-		bindingsStr = string(b)
-	case *bindings != "":
-		bindingsStr = *bindings
-	case len(paramsKV) > 0:
-		mp := map[string]string{}
-		for _, kv := range paramsKV {
-			k, v, err := parseKV(kv)
-			if err != nil {
-				fmt.Fprintln(os.Stderr, err.Error())
-				os.Exit(2)
-			}
-			mp[k] = v
-		}
-		b, _ := json.Marshal(mp)
-		bindingsStr = string(b)
+	bindingsStr, err := BuildBindings(*spec, *specFile, *bindings, *bindingsFile, paramsKV)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(2)
 	}
 
 	p := map[string]any{"experiment": args[0]}
