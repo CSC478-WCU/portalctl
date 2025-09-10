@@ -13,7 +13,7 @@ portalctl <command> [global flags] [command flags]
   -cert string     Client cert PEM (or combined PEM)
   -key string      Client key PEM (defaults to -cert)
   -cacert string   CA cert PEM (required if -verify)
-  -verify          Verify server cert using CA
+  -verify          Verify server cert using CA (needs to be removed, certs are self-signed and throw errors)
   -timeout int     HTTP timeout seconds (default 900)
 ```
 
