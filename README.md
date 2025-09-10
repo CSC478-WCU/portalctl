@@ -52,7 +52,7 @@ portalctl <command> [global flags] [command flags]
 
 **Examples:**
 
-_Start the terraform-profile experiment (with xvenm on rawpc using [/examples/xvenvm-on-rawpc.json](/examples/xvenvm-on-rawpc.json)):_
+_Start the terraform-profile experiment (with xvenm on rawpc using [/examples/xenvm-on-rawpc.json](/examples/xenvm-on-rawpc.json)):_
 
 ```bash
  ./portalctl start \
