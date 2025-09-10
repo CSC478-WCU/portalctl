@@ -60,7 +60,7 @@ _Start the terraform-profile experiment (with xvenm on rawpc using [/examples/xe
   -path /usr/testbed \
   -cert ./cert.pem \
   -project cloud-edu \
-  -name bridge-demo \
+  -name xenvm-on-rawpc \
   -spec-file ./examples/xvenm-on-rawpc.json cloud-edu,terraform-profile
 ```
 
